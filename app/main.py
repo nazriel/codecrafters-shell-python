@@ -31,9 +31,23 @@ def command_cd(args):
     if len(args) == 0:
         return change_cwd(os.environ["HOME"])
 
-    new_dir = args[0]
+    # TODO: handling of variables and quotes
+    new_dir = " ".join(args).replace('"', "")
     if new_dir.startswith("/"):
         if not change_cwd(new_dir):
+            sys.stdout.write(f"cd: {new_dir}: No such file or directory\n")
+    else:
+        new_path = state.cwd
+        parts = new_dir.split("/")
+        for p in parts:
+            if p == "..":
+                new_path = os.path.dirname(new_path).rstrip("/")
+            elif p == ".":
+                continue
+            else:
+                new_path = os.path.join(new_path, p).rstrip("/")
+
+        if not change_cwd(new_path):
             sys.stdout.write(f"cd: {new_dir}: No such file or directory\n")
 
 
