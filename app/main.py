@@ -1,12 +1,23 @@
 import sys
 
 
+def command_exit(args):
+    status_code = int(args[0]) if len(args) > 0 and args[0].isdigit() else 0
+    sys.exit(status_code)
+
+
+commands_map = {"exit": command_exit}
+
+
 def handle_input(input):
     if input.strip() == "":
         return
 
-    command = input.split(" ")
-    sys.stdout.write(f"{command[0]}: command not found\n")
+    params = input.split(" ")
+    if params[0] in commands_map:
+        commands_map[params[0]](params[1:])
+
+    sys.stdout.write(f"{params[0]}: command not found\n")
 
 
 def print_prompt():
@@ -18,9 +29,6 @@ def main():
     while True:
         print_prompt()
         last_input = input()
-        if last_input == "exit":
-            break
-
         handle_input(last_input)
 
 
