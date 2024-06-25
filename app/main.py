@@ -2,7 +2,14 @@ import os
 import subprocess
 import sys
 
-builtins = ["exit", "echo", "type"]
+
+class State:
+    def __init__(self) -> None:
+        self.cwd = os.getcwd()
+
+
+state = State()
+builtins = ["echo", "exit", "pwd", "type"]
 
 
 def find_executable(executable):
@@ -12,13 +19,17 @@ def find_executable(executable):
     return None
 
 
+def command_echo(args):
+    sys.stdout.write(" ".join(args) + "\n")
+
+
 def command_exit(args):
     status_code = int(args[0]) if len(args) > 0 and args[0].isdigit() else 0
     sys.exit(status_code)
 
 
-def command_echo(args):
-    sys.stdout.write(" ".join(args) + "\n")
+def command_pwd(args):
+    sys.stdout.write(state.cwd + "\n")
 
 
 def command_type(args):
@@ -32,7 +43,12 @@ def command_type(args):
             sys.stdout.write(f"{args[0]}: not found\n")
 
 
-commands_map = {"exit": command_exit, "echo": command_echo, "type": command_type}
+commands_map = {
+    "exit": command_exit,
+    "echo": command_echo,
+    "type": command_type,
+    "pwd": command_pwd,
+}
 
 
 def handle_input(input):
