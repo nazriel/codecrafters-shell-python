@@ -19,6 +19,24 @@ def find_executable(executable):
     return None
 
 
+def command_cd(args):
+    def change_cwd(new_dir):
+        if os.path.exists(new_dir) and os.path.isdir(new_dir):
+            state.cwd = new_dir
+            os.environ["PWD"] = state.cwd
+            os.chdir(state.cwd)
+            return True
+        return False
+
+    if len(args) == 0:
+        return change_cwd(os.environ["HOME"])
+
+    new_dir = args[0]
+    if new_dir.startswith("/"):
+        if not change_cwd(new_dir):
+            sys.stdout.write(f"cd: {new_dir}: No such file or directory\n")
+
+
 def command_echo(args):
     sys.stdout.write(" ".join(args) + "\n")
 
@@ -44,6 +62,7 @@ def command_type(args):
 
 
 commands_map = {
+    "cd": command_cd,
     "exit": command_exit,
     "echo": command_echo,
     "type": command_type,
