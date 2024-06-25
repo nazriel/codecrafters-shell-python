@@ -6,7 +6,11 @@ def command_exit(args):
     sys.exit(status_code)
 
 
-commands_map = {"exit": command_exit}
+def command_echo(args):
+    sys.stdout.write(" ".join(args) + "\n")
+
+
+commands_map = {"exit": command_exit, "echo": command_echo}
 
 
 def handle_input(input):
@@ -16,8 +20,8 @@ def handle_input(input):
     params = input.split(" ")
     if params[0] in commands_map:
         commands_map[params[0]](params[1:])
-
-    sys.stdout.write(f"{params[0]}: command not found\n")
+    else:
+        sys.stdout.write(f"{params[0]}: command not found\n")
 
 
 def print_prompt():
