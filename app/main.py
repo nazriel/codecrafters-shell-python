@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 
 builtins = ["exit", "echo", "type"]
@@ -42,7 +43,11 @@ def handle_input(input):
     if params[0] in commands_map:
         commands_map[params[0]](params[1:])
     else:
-        sys.stdout.write(f"{params[0]}: command not found\n")
+        exe = find_executable(params[0])
+        if exe:
+            subprocess.call([exe] + params[1:])
+        else:
+            sys.stdout.write(f"{params[0]}: command not found\n")
 
 
 def print_prompt():
