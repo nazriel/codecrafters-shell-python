@@ -1,6 +1,14 @@
+import os
 import sys
 
 builtins = ["exit", "echo", "type"]
+
+
+def find_executable(executable):
+    for p in os.environ["PATH"].split(":"):
+        if os.path.exists(f"{p}/{executable}"):
+            return f"{p}/{executable}"
+    return None
 
 
 def command_exit(args):
@@ -16,7 +24,11 @@ def command_type(args):
     if args[0] in builtins:
         sys.stdout.write(f"{args[0]} is a shell builtin\n")
     else:
-        sys.stdout.write(f"{args[0]}: not found\n")
+        exe = find_executable(args[0])
+        if exe:
+            sys.stdout.write(f"{args[0]} is {exe}\n")
+        else:
+            sys.stdout.write(f"{args[0]}: not found\n")
 
 
 commands_map = {"exit": command_exit, "echo": command_echo, "type": command_type}
