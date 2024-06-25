@@ -33,6 +33,9 @@ def command_cd(args):
 
     # TODO: handling of variables and quotes
     new_dir = " ".join(args).replace('"', "")
+    if new_dir == "~":
+        return change_cwd(os.environ["HOME"])
+
     if new_dir.startswith("/"):
         if not change_cwd(new_dir):
             sys.stdout.write(f"cd: {new_dir}: No such file or directory\n")
