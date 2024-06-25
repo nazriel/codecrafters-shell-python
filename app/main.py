@@ -1,5 +1,7 @@
 import sys
 
+builtins = ["exit", "echo", "type"]
+
 
 def command_exit(args):
     status_code = int(args[0]) if len(args) > 0 and args[0].isdigit() else 0
@@ -10,7 +12,14 @@ def command_echo(args):
     sys.stdout.write(" ".join(args) + "\n")
 
 
-commands_map = {"exit": command_exit, "echo": command_echo}
+def command_type(args):
+    if args[0] in builtins:
+        sys.stdout.write(f"{args[0]} is a shell builtin\n")
+    else:
+        sys.stdout.write(f"{args[0]}: not found\n")
+
+
+commands_map = {"exit": command_exit, "echo": command_echo, "type": command_type}
 
 
 def handle_input(input):
